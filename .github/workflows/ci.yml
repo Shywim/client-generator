@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Cache deps
-      id: cache-client-gen-build
+      id: cache-client-gen-deps
       uses: actions/cache@v2
       with:
         path: node_modules
@@ -50,7 +50,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Cache deps
-      id: cache-client-gen-build
+      id: cache-client-gen-deps
       uses: actions/cache@v2
       with:
         path: node_modules
