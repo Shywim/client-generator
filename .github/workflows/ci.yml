@@ -56,12 +56,13 @@ jobs:
     - run: npm install -g yarn
     - name: Create Next app and install dependencies
       run: |
-        yarn create next-app your-app-name
+        yarn create next-adpp your-app-name
         cd your-app-name
         yarn add --dev typescript @types/react @types/node
         yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
-        
+
     - name: Generate routes
-      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "../lib/index.js" https://demo.api-platforn.com -g next .
+      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "lib/index.js" https://demo.api-platforn.com -g next your-app-name
     - name: Test build
       run: yarn build
+      working-directory: ./your-app-name
