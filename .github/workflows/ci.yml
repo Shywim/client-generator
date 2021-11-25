@@ -74,7 +74,7 @@ jobs:
         yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
 
     - name: Generate routes
-      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "lib/index.js" https://demo.api-platforn.com -g next your-app-name
+      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "lib/index.js" https://demo.api-platform.com -g next your-app-name
     - name: Test build
       run: yarn build
       working-directory: ./your-app-name
