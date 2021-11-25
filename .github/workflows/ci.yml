@@ -14,6 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Cache deps
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-deps
     - name: Cache Build
       id: cache-client-gen-build
       uses: actions/cache@v2
@@ -43,6 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Cache deps
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-deps
     - name: Cache Build
       id: cache-client-gen-build
       uses: actions/cache@v2
