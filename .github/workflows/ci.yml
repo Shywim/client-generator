@@ -60,6 +60,7 @@ jobs:
         cd your-app-name
         yarn add --dev typescript @types/react @types/node
         yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
+        
     - name: Generate routes
       run: NODE_TLS_REJECT_UNAUTHORIZED=0 "../lib/index.js" https://demo.api-platforn.com -g next .
     - name: Test build
