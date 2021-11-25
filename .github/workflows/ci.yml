@@ -56,7 +56,7 @@ jobs:
     - run: npm install -g yarn
     - name: Create Next app and install dependencies
       run: |
-        yarn create next-adpp your-app-name
+        yarn create next-app your-app-name
         cd your-app-name
         yarn add --dev typescript @types/react @types/node
         yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
