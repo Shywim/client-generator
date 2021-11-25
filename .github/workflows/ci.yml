@@ -14,10 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Cache Build
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: lib
+        key: ${{ runner.os }}-client-gen-build
     - name: Build Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+
     - run: yarn install
     - run: yarn build
     - run: yarn test
@@ -25,3 +33,34 @@ jobs:
     - run: yarn test-gen
     - run: yarn test-gen-env
     - run: yarn check
+
+  build-next:
+    strategy:
+      matrix:
+        node-version: ['15']
+
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache Build
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: lib
+        key: ${{ runner.os }}-client-gen-build
+    - name: Build Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+    - name: Create Next app and install dependencies
+      run: |
+        yarn create next-app your-app-name
+        cd your-app-name
+        yarn add --dev typescript @types/react @types/node
+        yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
+    - name: Generate routes
+      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "../lib/index.js" https://demo.api-platforn.com -g next .
+    - name: Test build
+      run: yarn build
