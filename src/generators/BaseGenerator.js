@@ -154,7 +154,6 @@ export default class {
       case "http://www.w3.org/2001/XMLSchema#date":
       case "http://www.w3.org/2001/XMLSchema#dateTime":
       case "http://www.w3.org/2001/XMLSchema#time":
-        return "Date";
       case "http://www.w3.org/2001/XMLSchema#string":
         return "string";
     }
