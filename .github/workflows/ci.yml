@@ -43,7 +43,7 @@ jobs:
   build-next:
     strategy:
       matrix:
-        node-version: ['15']
+        node-version: ['14', '15']
 
     needs: build
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
   build-nuxt:
     strategy:
       matrix:
-        node-version: ['15']
+        node-version: ['14', '15']
 
     needs: build
     runs-on: ubuntu-latest
@@ -117,4 +117,3 @@ jobs:
     - name: Test build
       run: yarn build
       working-directory: ./your-app-name
-      
