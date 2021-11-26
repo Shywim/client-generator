@@ -14,10 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Cache deps
+      id: cache-client-gen-deps
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-deps
+    - name: Cache Build
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: lib
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-build
     - name: Build Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+
     - run: yarn install
     - run: yarn build
     - run: yarn test
@@ -25,3 +39,81 @@ jobs:
     - run: yarn test-gen
     - run: yarn test-gen-env
     - run: yarn check
+
+  build-next:
+    strategy:
+      matrix:
+        node-version: ['14', '15']
+
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache deps
+      id: cache-client-gen-deps
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-deps
+    - name: Cache Build
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: lib
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-build
+    - name: Build Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+    - name: Create Next app and install dependencies
+      run: |
+        yarn create next-app your-app-name
+        cd your-app-name
+        yarn add --dev typescript @types/react @types/node
+        yarn add lodash.get lodash.has @types/lodash isomorphic-unfetch formik
+
+    - name: Generate routes
+      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "lib/index.js" https://demo.api-platform.com -g next your-app-name
+    - name: Test build
+      run: yarn build
+      working-directory: ./your-app-name
+
+  build-nuxt:
+    strategy:
+      matrix:
+        node-version: ['14', '15']
+
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache deps
+      id: cache-client-gen-deps
+      uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-deps
+    - name: Cache Build
+      id: cache-client-gen-build
+      uses: actions/cache@v2
+      with:
+        path: lib
+        key: ${{ runner.os }}-${{ matrix.node-version }}-client-gen-build
+    - name: Build Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install -g yarn
+    - name: Create Next app and install dependencies
+      run: |
+        npx create-nuxt-app your-app-name --answers '{"name":"your-app-name","language":"js","pm":"yarn","ui":"vuetify","features":[],"linter":["prettier","lintStaged"],"mode":"spa","target":"static","devTools":[],"ci":"none","vcs":"git","test":"none"}'
+        cd your-app-name
+        yarn add moment lodash vue-i18n vuelidate vuex-map-fields nuxt-i18n
+        yarn add --dev @nuxtjs/vuetify @nuxtjs/fontawesome
+        sed -i -e $'s|\'@nuxtjs/vuetify\',|\'@nuxtjs/vuetify\',\'@nuxtjs/fontawesome\',\'nuxt-i18n\',|' nuxt.config.js
+    - name: Generate routes
+      run: NODE_TLS_REJECT_UNAUTHORIZED=0 "lib/index.js" https://demo.api-platform.com -g next your-app-name
+    - name: Test build
+      run: yarn build
+      working-directory: ./your-app-name
